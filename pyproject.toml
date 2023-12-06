@@ -3,8 +3,8 @@ requires = [ "setuptools", "wheel", "Cython", "numpy>=1.13.3" ]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cycles"
-license = {text = "GPLv3", file = "LICENSE"}
+name = "pycycles"
+license = {text = "GPLv3"}
 authors = [{name = "feihoo87", email = "feihoo87@gmail.com"}]
 maintainers = [{name = "feihoo87", email = "feihoo87@gmail.com"}]
 description = "Permutation and permutation groups"
@@ -18,11 +18,12 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU GENERAL PUBLIC LICENSE v3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS :: MacOS X",
-    "Topic :: Scientific/Mathematics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
