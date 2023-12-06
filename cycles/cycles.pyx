@@ -1,7 +1,7 @@
 import functools
 import math
 from itertools import repeat
-from typing import Literal, TypeVar
+from typing import Dict, Literal, TypeVar
 
 import numpy as np
 
@@ -70,7 +70,7 @@ class Cycles():
         return other.__mul__(self)
 
     @staticmethod
-    def _from_sorted_mapping(mapping: dict[int, int]) -> 'Cycles':
+    def _from_sorted_mapping(mapping: Dict[int, int]) -> 'Cycles':
         c = Cycles()
         if not mapping:
             return c
