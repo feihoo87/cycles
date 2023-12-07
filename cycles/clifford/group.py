@@ -2,8 +2,7 @@ from functools import reduce
 from itertools import islice, product
 
 import numpy as np
-from qlisp.simulator.matricies import sigmaI, sigmaX, sigmaY, sigmaZ
-from qlisp.simulator.simple import seq2mat
+from qlispc import seq2mat, sigmaI, sigmaX, sigmaY, sigmaZ
 
 from ..cycles import Cycles, find_permutation
 from ..group import PermutationGroup

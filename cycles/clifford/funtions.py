@@ -4,7 +4,17 @@ from functools import reduce
 import numpy as np
 from numpy import pi
 from qlisp.simulator.matricies import U
-from waveforms.cache import cache
+
+try:
+    from waveforms.cache import cache
+except:
+
+    def cache():
+
+        def _cache(func):
+            return func
+
+        return _cache
 
 
 def cliffordOrder(n: int) -> int:

@@ -33,8 +33,7 @@ requires-python = ">= 3.10"
 dependencies = [
     "numpy>=1.13.3",
     "qlispc>=1.0.0",
-    "waveforms>=1.9.0",
-    "waveforms-math>=1.0.0"
+    "scipy>=1.0.0"
 ]
 dynamic = ["version"]
 
