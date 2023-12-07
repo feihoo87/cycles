@@ -5,7 +5,8 @@ from .cycles import Cycles
 logger = logging.getLogger(__name__)
 
 
-def _strip(h: Cycles, base: list[int], orbits: list[int], transversals,
+def _strip(h: Cycles, base: list[int], orbits: dict[int, list[int]],
+           transversals: dict[int, dict[int, Cycles]],
            j: int) -> tuple[Cycles, int]:
     """
     """
@@ -96,9 +97,8 @@ def distribute_gens_by_base(base: list[int],
 
 
 def schreier_sims_incremental(
-    gens: list[Cycles],
-    base: list[int] | None = None
-) -> tuple[list[int], list[Cycles]]:
+        gens: list[Cycles],
+        base: list[int] | None = None) -> tuple[list[int], list[Cycles]]:
     """Extend a sequence of points and generating set to a base and strong
     generating set.
 
