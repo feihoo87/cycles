@@ -23,10 +23,10 @@ def _strip(h: Cycles, base, orbits, transversals, j):
 
 
 def _orbit_transversal(
-    generators: list[Cycles],
-    alpha: int,
-    Identity: Cycles = Cycles(),
-) -> tuple[list[tuple[int, Cycles]], dict[int, list[int]]]:
+        generators: list[Cycles],
+        alpha: int,
+        Identity: Cycles = Cycles(),
+) -> dict[int, Cycles]:
     r"""Computes a transversal for the orbit of ``alpha`` as a set.
 
     Explanation
