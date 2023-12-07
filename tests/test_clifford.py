@@ -4,15 +4,15 @@ import operator
 import random
 
 import numpy as np
+from qlispc import applySeq, seq2mat, synchronize_global_phase
+
 from cycles import CliffordGroup, PermutationGroup
-from qlisp.simulator.matricies import synchronize_global_phase
-from qlisp.simulator.simple import applySeq, seq2mat
-from waveforms.math.group.clifford import (cliffordOrder,
-                                           find_permutation_for_Unitary)
-from waveforms.math.group.clifford.funtions import (
-    one_qubit_clifford_matricies, one_qubit_clifford_mul_table,
-    one_qubit_clifford_seq, one_qubit_clifford_seq2)
-from waveforms.math.group.clifford.group import make_clifford_generators
+from cycles.clifford import cliffordOrder, find_permutation_for_Unitary
+from cycles.clifford.funtions import (one_qubit_clifford_matricies,
+                                      one_qubit_clifford_mul_table,
+                                      one_qubit_clifford_seq,
+                                      one_qubit_clifford_seq2)
+from cycles.clifford.group import make_clifford_generators
 
 
 def make_circuit(gate, N):
