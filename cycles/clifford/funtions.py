@@ -3,7 +3,7 @@ from functools import reduce
 
 import numpy as np
 from numpy import pi
-from qlisp.simulator.matricies import U
+from qlispc import U
 
 try:
     from waveforms.cache import cache
