@@ -9,7 +9,7 @@ from typing import Callable, TypeVar, Union
 import numpy as np
 
 from .cycles import Cycles, permute
-from .schreier_sims import (_distribute_gens_by_base, _orbit_transversal,
+from .schreier_sims import (distribute_gens_by_base, orbit_transversal,
                             schreier_sims_incremental)
 
 
@@ -238,13 +238,13 @@ class PermutationGroup():
             self._basic_orbits = []
             return
 
-        strong_gens_distr = _distribute_gens_by_base(base, strong_gens)
+        strong_gens_distr = distribute_gens_by_base(base, strong_gens)
 
         # Compute basic orbits and transversals from a base and strong generating set.
         transversals = []
         basic_orbits = []
         for alpha, gens in zip(base, strong_gens_distr):
-            transversal = _orbit_transversal(gens, alpha)
+            transversal = orbit_transversal(gens, alpha)
             basic_orbits.append(list(transversal.keys()))
             transversals.append(transversal)
 
@@ -457,7 +457,7 @@ class PermutationGroup():
         base = self._base
         if not base:  # e.g. if self is trivial
             return []
-        strong_gens_distr = _distribute_gens_by_base(base, strong_gens)
+        strong_gens_distr = distribute_gens_by_base(base, strong_gens)
         basic_stabilizers = []
         for i, gens in enumerate(strong_gens_distr):
             basic_stabilizers.append((tuple(base[:i]), PermutationGroup(gens)))

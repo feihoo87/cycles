@@ -22,7 +22,7 @@ def _strip(h: Cycles, base, orbits, transversals, j):
     return h, base_len + 1
 
 
-def _orbit_transversal(
+def orbit_transversal(
         generators: list[Cycles],
         alpha: int,
         Identity: Cycles = Cycles(),
@@ -51,8 +51,8 @@ def _orbit_transversal(
     return dict(tr)
 
 
-def _distribute_gens_by_base(base: list,
-                             gens: list[Cycles]) -> list[list[Cycles]]:
+def distribute_gens_by_base(base: list,
+                            gens: list[Cycles]) -> list[list[Cycles]]:
     r"""
     Distribute the group elements ``gens`` by membership in basic stabilizers.
 
@@ -142,13 +142,13 @@ def schreier_sims_incremental(
             base.append(new)
     #logger.debug("Schreier-Sims: base = %s, gens = %s", _base, _gens)
     # distribute generators according to basic stabilizers
-    strong_gens_distr = _distribute_gens_by_base(base, gens)
+    strong_gens_distr = distribute_gens_by_base(base, gens)
     new_strong_gens = []
     # initialize the basic stabilizers, basic orbits and basic transversals
     orbs = {}
     transversals = {}
     for i, alpha in enumerate(base):
-        transversals[i] = _orbit_transversal(strong_gens_distr[i], alpha)
+        transversals[i] = orbit_transversal(strong_gens_distr[i], alpha)
         orbs[i] = list(transversals[i].keys())
     # main loop: amend the stabilizer chain until we have generators
     # for all stabilizers
@@ -194,7 +194,7 @@ def schreier_sims_incremental(
                         for l in range(i + 1, j):
                             strong_gens_distr[l].append(h)
                             transversals[l] =\
-                            _orbit_transversal(strong_gens_distr[l],
+                            orbit_transversal(strong_gens_distr[l],
                                 base[l])
                             orbs[l] = list(transversals[l].keys())
                         i = j - 1
