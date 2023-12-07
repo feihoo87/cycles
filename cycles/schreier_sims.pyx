@@ -5,7 +5,8 @@ from .cycles import Cycles
 logger = logging.getLogger(__name__)
 
 
-def _strip(h: Cycles, base, orbits, transversals, j):
+def _strip(h: Cycles, base: list[int], orbits: list[int], transversals,
+           j: int) -> tuple[Cycles, int]:
     """
     """
     base_len = len(base)
@@ -51,7 +52,7 @@ def orbit_transversal(
     return dict(tr)
 
 
-def distribute_gens_by_base(base: list,
+def distribute_gens_by_base(base: list[int],
                             gens: list[Cycles]) -> list[list[Cycles]]:
     r"""
     Distribute the group elements ``gens`` by membership in basic stabilizers.
@@ -97,7 +98,7 @@ def distribute_gens_by_base(base: list,
 def schreier_sims_incremental(
     gens: list[Cycles],
     base: list[int] | None = None
-) -> tuple[list[int], list[Cycles], dict[int, list[int]]]:
+) -> tuple[list[int], list[Cycles]]:
     """Extend a sequence of points and generating set to a base and strong
     generating set.
 
