@@ -99,9 +99,8 @@ class SU():
         return expm(1j * sum(a * g for a, g in zip(angles, self.generators)))
 
     def random(self):
-        n = self.n**2 - 1
-        vec = np.random.randn(n)
+        vec = np.random.randn(self.order)
         vec = vec / np.linalg.norm(vec)
-        radius = np.random.rand()**(1.0 / n)
+        radius = np.random.rand()**(1.0 / self.order)
         angles = 2 * np.pi * radius * vec
         return self(angles)

@@ -92,3 +92,10 @@ class SO():
                 angles.append(A[k, l])
 
         return np.array(angles)
+    
+    def random(self):
+        vec = np.random.randn(self.order)
+        vec = vec / np.linalg.norm(vec)
+        radius = np.random.rand()**(1.0 / self.order)
+        angles = 2 * np.pi * radius * vec
+        return self(angles)
