@@ -1,4 +1,5 @@
 import math
+from functools import cached_property
 
 import numpy as np
 from scipy.linalg import expm, logm
@@ -49,7 +50,7 @@ class SU():
         else:
             return mat / np.sqrt(A)
 
-    @property
+    @cached_property
     def generators(self):
         return [self[i] for i in range(1, self.n**2)]
 
@@ -87,14 +88,15 @@ class SU():
             angles.append(np.trace(A @ self[i]).real / 2)
         return np.array(angles)
 
-    def __call__(self, angles):
+    def __call__(self, *angles):
         """
         mat = expm(1j*sum(angles[i]*self[i]))
         """
-        if len(angles) != self.n**2 - 1:
-            raise ValueError(f"angles must be of length {self.n**2-1}")
-        return expm(1j * sum(angles[i - 1] * self[i]
-                             for i in range(1, self.n**2)))
+        if len(angles) != self.order:
+            raise ValueError(
+                f"SU({self.n}) takes {self.order} angles, but {len(angles)} given"
+            )
+        return expm(1j * sum(a * g for a, g in zip(angles, self.generators)))
 
     def random(self):
         n = self.n**2 - 1
