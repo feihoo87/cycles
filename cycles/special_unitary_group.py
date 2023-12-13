@@ -49,6 +49,18 @@ class SU():
         else:
             return mat / np.sqrt(A)
 
+    @property
+    def generators(self):
+        return [self[i] for i in range(1, self.n**2)]
+
+    @property
+    def dim(self):
+        return self.n
+
+    @property
+    def order(self):
+        return self.n**2 - 1
+
     def __repr__(self):
         return f"SU({self.n})"
 
