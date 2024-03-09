@@ -12,6 +12,8 @@ from .cycles import Cycles, permute
 from .schreier_sims import (distribute_gens_by_base, orbit_transversal,
                             schreier_sims_incremental)
 
+T = TypeVar('T')
+
 
 class _NotContained(Exception):
     pass
@@ -163,12 +165,9 @@ class PermutationGroup():
             self.schreier_sims()
         return self._base
 
-    def orbit(
-        self,
-        alpha: TypeVar('T'),
-        action: Callable[[TypeVar('T'), Cycles],
-                         TypeVar('T')] | None = None
-    ) -> list[TypeVar('T')]:
+    def orbit(self,
+              alpha: T,
+              action: Callable[[T, Cycles], T] | None = None) -> list[T]:
         """finds the orbit under the group action given by a function `action`
         """
         if isinstance(alpha, int) and action is None:
