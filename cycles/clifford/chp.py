@@ -3,6 +3,30 @@ import random
 
 from .paulis import imul_paulis
 
+gate_circuits = {
+    'SWAP': [('H', 0), ('H', 1), ('CZ', 0, 1), ('H', 0), ('H', 1),
+             ('CZ', 0, 1), ('H', 0), ('H', 1), ('CZ', 0, 1)],
+    'iSWAP': [('P', 1), ('H', 1), ('H', 0), ('CZ', 0, 1), ('H', 1), ('H', 0),
+              ('CZ', 0, 1), ('H', 0), ('H', 1), ('P', 1)],
+    'CX': [('H', 1), ('CZ', 0, 1), ('H', 1)],
+    'Cnot': [('H', 1), ('CZ', 0, 1), ('H', 1)],
+    'X': [('H', 0), ('P', 0), ('P', 0), ('H', 0)],
+    'X/2': [('H', 0), ('P', 0), ('H', 0)],
+    '-X/2': [('H', 0), ('P', 0), ('P', 0), ('P', 0), ('H', 0)],
+    'Y': [('H', 0), ('P', 0), ('P', 0), ('H', 0), ('P', 0), ('P', 0)],
+    'Y/2': [('P', 0), ('P', 0), ('H', 0)],
+    '-Y/2': [('H', 0), ('P', 0), ('P', 0)],
+    'Z': [('P', 0), ('P', 0)],
+    'Z/2': [('P', 0)],
+    '-Z/2': [('P', 0), ('P', 0), ('P', 0)],
+    'S': [('P', 0)],
+    '-S': [('P', 0), ('P', 0), ('P', 0)],
+}
+
+
+def _map_qubits(circuit, qubits):
+    return [(gate, *[qubits[i] for i in q]) for gate, *q in circuit]
+
 
 def H(a, i):
     sign = a & 3
@@ -109,14 +133,9 @@ def run_circuit(circ, stablizers=None, state=None):
             stablizers = [P(a, *qubits) for a in stablizers]
         elif gate == 'CZ':
             stablizers = [CZ(a, *qubits) for a in stablizers]
-        elif gate == 'CX' or gate == 'Cnot':
-            stablizers, state = run_circuit([('H', qubits[1]), ('CZ', *qubits),
-                                             ('H', qubits[1])], stablizers,
-                                            state)
-        elif gate == 'X':
-            stablizers, state = run_circuit([('H', *qubits), ('P', *qubits),
-                                             ('P', *qubits), ('H', *qubits)],
-                                            stablizers, state)
+        elif gate in gate_circuits:
+            stablizers, state = run_circuit(
+                _map_qubits(gate_circuits[gate], qubits), stablizers, state)
         elif gate == 'M' or gate == 'Measure':
             flag, stablizers = measure(stablizers, *qubits)
             if flag >= 2:
