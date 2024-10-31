@@ -20,6 +20,16 @@ def cliffordOrder(n: int) -> int:
                                  for j in range(1, n + 1)), 1)
 
 
+def make_stablizers(N: int) -> list[int]:
+    stablizers = []
+    for s in islice(product('IXYZ', repeat=N), 1, None):
+        n = encode_paulis(''.join(s))
+        stablizers.append(n)
+        stablizers.append(n | 2)
+
+    return stablizers
+
+
 def make_clifford_generators(
         N: int,
         graph: tuple[str, int, int] | None = None) -> dict[tuple, Cycles]:
@@ -28,11 +38,7 @@ def make_clifford_generators(
         for i in range(N - 1):
             graph.append(('CZ', i, i + 1))
 
-    stablizers = []
-    for s in islice(product('IXYZ', repeat=N), 1, None):
-        n = encode_paulis(''.join(s))
-        stablizers.append(n)
-        stablizers.append(n | 2)
+    stablizers = make_stablizers(N)
 
     generators = {}
 
@@ -61,6 +67,7 @@ class CliffordGroup(PermutationGroup):
                  graph: tuple[int, int] | None = None,
                  generators: dict[tuple, Cycles] | None = None):
         self.N = N
+        self.stabilizers = make_stablizers(N)
         if generators is None:
             generators = make_clifford_generators(N, graph)
         super().__init__(list(generators.values()))
@@ -71,6 +78,21 @@ class CliffordGroup(PermutationGroup):
     def __len__(self):
         return cliffordOrder(self.N)
 
-    def permutation_to_circuit(self, perm):
+    def permutation_to_circuit(self, perm: Cycles) -> list:
         perm = self.express(perm)
         return [self.reversed_map[c] for c in perm.expand()]
+
+    def circuit_to_permutation(self, circuit: list) -> Cycles:
+        perm = Cycles()
+        for gate in circuit:
+            if gate not in self.gate_map:
+                p = find_permutation(self.stablizers,
+                                     run_circuit([gate], self.stablizers)[0])
+                self.gate_map[gate] = p
+                self.gate_map_inv[p] = gate
+            perm = perm * self.gate_map[gate]
+        return self.express(perm)
+
+    def circuit_inv(self, circuit: list) -> list:
+        perm = self.circuit_to_permutation(circuit).inv()
+        return self.permutation_to_circuit(perm)

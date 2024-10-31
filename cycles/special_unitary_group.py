@@ -82,10 +82,17 @@ class SU():
         """
         if not self.__contains__(mat):
             raise ValueError(f"mat is not in SU({self.n})")
-        A = logm(mat) / 1j
+        return self.expand(logm(mat) / 1j)
+
+    def expand(self, mat):
+        """
+        mat = sum(angles[i]*self[i])
+        """
+        if not np.allclose(mat, mat.T.conj()):
+            raise ValueError(f"mat is not a hermitian matrix")
         angles = []
         for i in range(1, self.n**2):
-            angles.append(np.trace(A @ self[i]).real / 2)
+            angles.append(np.trace(mat @ self[i]).real / 2)
         return np.array(angles)
 
     def __call__(self, *angles):
