@@ -140,7 +140,7 @@ class _Op():
         return d
 
     @staticmethod
-    def _sort_subsys(l: list[_BaseOp]) -> list[tuple(list[_BaseOp], int)]:
+    def _sort_subsys(l: list[_BaseOp]) -> list[tuple[list[_BaseOp], int]]:
         d = {}
         n = len(l)
         rest = {}
