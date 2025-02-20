@@ -1,4 +1,5 @@
 from .clifford import CliffordGroup
+from .clifford.group import OneQubitCliffordGateType, TwoQubitCliffordGateType
 from .cycles import Cycles, find_permutation, permute, random_permutation
 from .group import Coset, PermutationGroup
 from .named_group import (AbelianGroup, AlternatingGroup, CyclicGroup,

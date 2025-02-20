@@ -1,11 +1,16 @@
 import operator
 from functools import reduce
 from itertools import islice, product
+from typing import Literal, Sequence
 
 from ..cycles import Cycles, find_permutation
 from ..group import PermutationGroup
-from .chp import CZ, H, P, run_circuit
+from .chp import run_circuit
 from .paulis import encode_paulis
+
+OneQubitCliffordGateType = Literal['H', 'S', '-S', 'X', 'X/2', '-X/2', 'Y',
+                                   'Y/2', '-Y/2', 'Z/2', '-Z/2', 'Z']
+TwoQubitCliffordGateType = Literal['CZ', 'iSWAP', '-iSWAP', 'Cnot']
 
 
 def cliffordOrder(n: int) -> int:
@@ -30,32 +35,51 @@ def make_stablizers(N: int) -> list[int]:
     return stablizers
 
 
+def verify_one_qubit_clifford_generators(
+        gates: Sequence[OneQubitCliffordGateType]) -> bool:
+    stablizers = make_stablizers(1)
+    generators = []
+    for gate in gates:
+        generators.append(
+            find_permutation(stablizers,
+                             run_circuit([(gate, 0)], stablizers)[0]))
+    g = PermutationGroup(generators)
+    elms = [Cycles((0, 4), (1, 5), (2, 3)), Cycles((0, 2, 1, 3), )]
+
+    for el in elms:
+        if el not in g:
+            return False
+    return True
+
+
 def make_clifford_generators(
         N: int,
+        one_qubit_gates: Sequence[OneQubitCliffordGateType] = ('H', 'S'),
+        two_qubit_gate: TwoQubitCliffordGateType = 'CZ',
         graph: tuple[str, int, int] | None = None) -> dict[tuple, Cycles]:
+
+    if not verify_one_qubit_clifford_generators(one_qubit_gates):
+        raise ValueError("Imperfection in one_qubit_gates generators.")
+
     if graph is None:
         graph = []
         for i in range(N - 1):
-            graph.append(('CZ', i, i + 1))
+            graph.append((two_qubit_gate, i, i + 1))
 
     stablizers = make_stablizers(N)
 
     generators = {}
 
     for i in range(N):
-        generators[('H', i)] = find_permutation(stablizers,
-                                                [H(s, i) for s in stablizers])
-        generators[('S', i)] = find_permutation(stablizers,
-                                                [P(s, i) for s in stablizers])
-
-    for gate, i, j in graph:
-        if gate == 'CZ':
-            generators[(gate, i, j)] = find_permutation(
-                stablizers, [CZ(s, i, j) for s in stablizers])
-        else:
-            generators[(gate, i, j)] = find_permutation(
+        for gate in one_qubit_gates:
+            generators[(gate, i)] = find_permutation(
                 stablizers,
-                run_circuit([(gate, i, j)], stablizers)[0])
+                run_circuit([(gate, i)], stablizers)[0])
+
+    for two_qubit_gate, i, j in graph:
+        generators[(two_qubit_gate, i, j)] = find_permutation(
+            stablizers,
+            run_circuit([(two_qubit_gate, i, j)], stablizers)[0])
 
     return generators
 
@@ -64,12 +88,18 @@ class CliffordGroup(PermutationGroup):
 
     def __init__(self,
                  N: int,
+                 one_qubit_gates: tuple[Literal['H', 'S', '-S', 'X', 'X/2',
+                                                '-X/2', 'Y', 'Y/2', '-Y/2',
+                                                'Z/2', '-Z/2', 'Z'],
+                                        ...] = ('H', 'S'),
+                 two_qubit_gate: Literal['CZ', 'iSWAP', 'Cnot'] = 'CZ',
                  graph: tuple[int, int] | None = None,
                  generators: dict[tuple, Cycles] | None = None):
         self.N = N
         self.stabilizers = make_stablizers(N)
         if generators is None:
-            generators = make_clifford_generators(N, graph)
+            generators = make_clifford_generators(N, one_qubit_gates,
+                                                  two_qubit_gate, graph)
         super().__init__(list(generators.values()))
         self.reversed_map = {v: k for k, v in generators.items()}
         self.gate_map = generators
