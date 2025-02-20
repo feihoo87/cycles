@@ -88,11 +88,8 @@ class CliffordGroup(PermutationGroup):
 
     def __init__(self,
                  N: int,
-                 one_qubit_gates: tuple[Literal['H', 'S', '-S', 'X', 'X/2',
-                                                '-X/2', 'Y', 'Y/2', '-Y/2',
-                                                'Z/2', '-Z/2', 'Z'],
-                                        ...] = ('H', 'S'),
-                 two_qubit_gate: Literal['CZ', 'iSWAP', 'Cnot'] = 'CZ',
+                 one_qubit_gates: Sequence[OneQubitCliffordGateType] = ('H', 'S'),
+                 two_qubit_gate: TwoQubitCliffordGateType = 'CZ',
                  graph: tuple[int, int] | None = None,
                  generators: dict[tuple, Cycles] | None = None):
         self.N = N
