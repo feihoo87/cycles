@@ -116,6 +116,14 @@ class PermutationGroup():
 
     @property
     def support(self):
+        """
+        Return the support of the group.
+
+        Explanation
+        ===========
+        The support of a permutation group is the set of integers
+        that appear in the cycles of the generators.
+        """
         if self._support is None:
             support = set()
             for g in self.generators:
