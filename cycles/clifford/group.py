@@ -62,6 +62,9 @@ def make_clifford_generators(
     if not verify_one_qubit_clifford_generators(one_qubit_gates):
         raise ValueError("Imperfection in one_qubit_gates generators.")
 
+    if not graph:
+        graph = [('CZ', i, i + 1) for i in range(N - 1)]
+
     stablizers = make_stablizers(N)
 
     generators = {}
